@@ -1,18 +1,21 @@
 var model = require('../models/db');
 const jwt = require('jsonwebtoken');
+var bcrypt = require('bcryptjs');
 const fs = require('fs')
 var privateKey = fs.readFileSync('./key/private.pem')
 var publicKey = fs.readFileSync('./key/publickey.crt')
 var db = new model()
 
 function register(req,res){
+        var salt = bcrypt.genSaltSync(10);
+        var hash = bcrypt.hashSync(req.body.password, salt);
         const entity = {
             username: req.body.username,
             fullname: req.body.fullname,
             email: req.body.email,
             phonenumbers: req.body.phonenumbers,
             role: req.body.role,
-            password: req.body.password
+            password: hash
         }
         /*  db.register(entity,function(result){
            

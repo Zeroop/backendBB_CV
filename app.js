@@ -8,6 +8,7 @@ const route = require('./routes/index');
 
 const jwt = require('jsonwebtoken');
 
+var bcrypt = require('bcryptjs');
 const fs = require('fs')
 const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -30,7 +31,12 @@ app.use(session({
   store: new redisStore({host:'localhost',port:'6379',client:redisClient,ttl:86400})
 }))
 
-
+var salt = bcrypt.genSaltSync(10);
+var hash = bcrypt.hashSync("trungnguyen", salt);
+console.log(hash)
+if(bcrypt.compareSync("trungnguyen", hash)){
+  console.log(1);
+}
 app.get('/logout',(req,res)=>{
   req.session.destroy();
   res.end();
